@@ -6,7 +6,6 @@ void ofApp::setup()
     ofSetFrameRate(60);
     server.setName("flicker");
     smoothServer.setName("smooth");
-    cutServer.setName("cut");
     beatServer.setName("beat");
     loadSettings();
 }
@@ -42,6 +41,9 @@ void ofApp::loadSettings()
                 colors.push_back(ofColor(settings.getAttribute("params", "R", 255),settings.getAttribute("params", "G", 0),settings.getAttribute("params", "B", 0)));
                 settings.popTag();
             }
+            settings.popTag();
+            settings.pushTag("osc");
+            oscSender.setup(settings.getAttribute("target", "IP", "localhost"), settings.getAttribute("target", "port", 5000));
             settings.popTag();
         }
         else
@@ -135,6 +137,11 @@ void ofApp::beat()
         {
             currentBeatColor = 0;
         }
+        ofxOscMessage m;
+        m.setAddress("/beat");
+        m.addIntArg(tapTempo.bpm());
+        m.addIntArg(tapTempo.beatTime());
+        oscSender.sendMessage(m, false);
     }
     previousBeat = tapTempo.sin1;
     ofSetColor(colors.at(currentBeatColor));

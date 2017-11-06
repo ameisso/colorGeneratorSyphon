@@ -2,9 +2,7 @@
     <size X=1920 Y=1080></size>
 </params>
 <osc>
-    <targetIp>localhost</targetIp>
-    <targetPort>1234</targetPort>
-    <inputPort>5000</inputPort>
+    <target IP='localhost' port=1234></target>
 </osc>
 <colors>
     <color>

@@ -4,6 +4,7 @@
 #include "ofxSyphon.h"
 #include "MSABPMTapper.h"
 #include "ofxXmlSettings.h"
+#include "ofxOsc.h"
 
 #define XML_NAME "settings.xml"
 
@@ -11,7 +12,7 @@ class ofApp : public ofBaseApp{
     
 public:
     void setup();
-     void loadSettings();
+    void loadSettings();
     void update();
     void draw();
     
@@ -27,8 +28,8 @@ public:
     
     ofxSyphonServer server;
     ofxSyphonServer smoothServer;
-    ofxSyphonServer cutServer;
     ofxSyphonServer beatServer;
+    ofxOscSender oscSender;
     ofFbo fbo;
     bool showResults = true;
     vector <ofColor > colors;
