@@ -1,0 +1,5 @@
+ofxMSABPMTapper
+ofxMSATimer
+ofxOsc
+ofxSyphon
+ofxXmlSettings

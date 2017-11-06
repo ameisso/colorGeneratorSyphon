@@ -1,0 +1,19 @@
+<params>
+    <size X=1920 Y=1080></size>
+</params>
+<osc>
+    <targetIp>localhost</targetIp>
+    <targetPort>1234</targetPort>
+    <inputPort>5000</inputPort>
+</osc>
+<colors>
+    <color>
+        <params R=255 G=0 B=0 ></params>
+    </color>
+    <color>
+        <params R=0 G=0 B=0 ></params>
+    </color>
+<!--    <color>-->
+<!--        <params R=0 G=0 B=255 ></params>-->
+<!--    </color>-->
+</colors>
