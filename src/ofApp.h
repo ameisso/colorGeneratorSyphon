@@ -25,6 +25,7 @@ public:
     void beat();
     void flap();
     void bar();
+    void arc();
     
     bool fileExists(string name);
     
@@ -33,6 +34,7 @@ public:
     ofxSyphonServer beatServer;
     ofxSyphonServer flapServer;
     ofxSyphonServer barServer;
+    ofxSyphonServer arcServer;
     ofxOscSender oscSender;
     ofFbo fbo;
     bool showResults = true;

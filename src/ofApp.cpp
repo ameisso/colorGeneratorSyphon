@@ -9,6 +9,7 @@ void ofApp::setup()
     beatServer.setName("beat");
     flapServer.setName("flap");
     barServer.setName("bar");
+    arcServer.setName("arc");
     loadSettings();
 }
 
@@ -78,7 +79,7 @@ void ofApp::update()
     m.addFloatArg(tapTempo.beatPerc());
     m.addFloatArg(tapTempo.sin1);
     oscSender.sendMessage(m, false);
-
+    
 }
 
 //--------------------------------------------------------------
@@ -93,6 +94,7 @@ void ofApp::draw()
         beat();
         flap();
         bar();
+        arc();
     }
 }
 
@@ -199,6 +201,36 @@ void ofApp::bar()
     }
 }
 
+void ofApp::arc()
+{
+    int barWidth = fbo.getWidth()/10;
+    fbo.begin();
+    ofSetColor(colors[0]);
+    ofFill();
+    ofDrawRectangle(0, 0, fbo.getWidth()  , fbo.getHeight());
+    ofEnableSmoothing();
+    ofPath curve;
+    curve.arc(ofPoint( fbo.getWidth()/2  , fbo.getHeight()/2),  fbo.getHeight()/2*0.8 , fbo.getHeight()/2*0.8, 270, 360*tapTempo.beatPerc());
+    curve.setStrokeColor(colors[1]);
+    curve.setStrokeWidth(fbo.getWidth()/5.0);
+    curve.setFilled(false);
+    curve.setCircleResolution(100);
+    curve.draw();
+    ofSetColor(colors[0]);
+    ofPath insideCurve;
+    insideCurve.arc(ofPoint( fbo.getWidth()/2  , fbo.getHeight()/2),  fbo.getHeight()/2*0.8 , fbo.getHeight()/2*0.8, 0, 360);
+    insideCurve.setCircleResolution(100);
+    insideCurve.setFillColor(colors[0]);
+    insideCurve.setFilled(true);
+    insideCurve.draw();
+    ofDisableSmoothing();
+    arcServer.publishTexture(&fbo.getTexture());
+    fbo.end();
+    if( showResults )
+    {
+        fbo.draw(500, 0,100,100);
+    }
+}
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if ( key == 'r' )
