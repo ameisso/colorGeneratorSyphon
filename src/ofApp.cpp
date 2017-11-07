@@ -4,9 +4,11 @@
 void ofApp::setup()
 {
     ofSetFrameRate(60);
-    server.setName("flicker");
+    flickerServer.setName("flicker");
     smoothServer.setName("smooth");
     beatServer.setName("beat");
+    flapServer.setName("flap");
+    barServer.setName("bar");
     loadSettings();
 }
 
@@ -71,18 +73,26 @@ void ofApp::update()
 {
     tapTempo.update();
     ofSetWindowTitle("bpm : "+ofToString(tapTempo.bpm()));
+    ofxOscMessage m;
+    m.setAddress("/beatStream");
+    m.addFloatArg(tapTempo.beatPerc());
+    m.addFloatArg(tapTempo.sin1);
+    oscSender.sendMessage(m, false);
+
 }
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
     ofBackground(0);
-    ofDrawBitmapString("RGB", ofGetWidth()/2-10, ofGetHeight()/2);
+    ofDrawBitmapString("'b' for beat, 's' for results, 'r' to reload", 30, ofGetHeight()/2);
     if(colors.size()>1)
     {
         flicker();
         smooth();
         beat();
+        flap();
+        bar();
     }
 }
 
@@ -93,7 +103,7 @@ void ofApp::flicker()
     ofSetColor(colors.at(v));
     ofFill();
     ofDrawRectangle(0, 0, fbo.getWidth()  , fbo.getHeight());
-    server.publishTexture(&fbo.getTexture());
+    flickerServer.publishTexture(&fbo.getTexture());
     fbo.end();
     if( showResults )
     {
@@ -139,8 +149,7 @@ void ofApp::beat()
         }
         ofxOscMessage m;
         m.setAddress("/beat");
-        m.addIntArg(tapTempo.bpm());
-        m.addIntArg(tapTempo.beatTime());
+        m.addIntArg(int(tapTempo.beatTime())%2);
         oscSender.sendMessage(m, false);
     }
     previousBeat = tapTempo.sin1;
@@ -153,7 +162,41 @@ void ofApp::beat()
     {
         fbo.draw(200, 0,100,100);
     }
+}
+
+void ofApp::flap()
+{
+    fbo.begin();
+    ofSetColor(colors[0]);
+    ofFill();
+    ofDrawRectangle(0, 0, fbo.getWidth()  , fbo.getHeight());
     
+    ofSetColor(colors[1]);
+    ofDrawRectangle(0, 0, fbo.getWidth(), abs(tapTempo.sin4)*fbo.getHeight());
+    flapServer.publishTexture(&fbo.getTexture());
+    fbo.end();
+    if( showResults )
+    {
+        fbo.draw(300, 0,100,100);
+    }
+}
+
+void ofApp::bar()
+{
+    int barWidth = fbo.getWidth()/10;
+    fbo.begin();
+    ofSetColor(colors[0]);
+    ofFill();
+    ofDrawRectangle(0, 0, fbo.getWidth()  , fbo.getHeight());
+    
+    ofSetColor(colors[1]);
+    ofDrawRectangle(abs(tapTempo.sin4)*fbo.getWidth(), 0, barWidth  , fbo.getHeight());
+    barServer.publishTexture(&fbo.getTexture());
+    fbo.end();
+    if( showResults )
+    {
+        fbo.draw(400, 0,100,100);
+    }
 }
 
 //--------------------------------------------------------------
@@ -171,7 +214,7 @@ void ofApp::keyPressed(int key){
         }
         else
         {
-            ofSetWindowShape(100, 30);
+            ofSetWindowShape(800, 40);
         }
     }
     else if( key == 'b')

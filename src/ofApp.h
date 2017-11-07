@@ -23,12 +23,16 @@ public:
     void flicker();
     void smooth();
     void beat();
+    void flap();
+    void bar();
     
     bool fileExists(string name);
     
-    ofxSyphonServer server;
+    ofxSyphonServer flickerServer;
     ofxSyphonServer smoothServer;
     ofxSyphonServer beatServer;
+    ofxSyphonServer flapServer;
+    ofxSyphonServer barServer;
     ofxOscSender oscSender;
     ofFbo fbo;
     bool showResults = true;
