@@ -73,7 +73,7 @@ void ofApp::loadSettings()
 void ofApp::update()
 {
     tapTempo.update();
-    ofSetWindowTitle("bpm : "+ofToString(tapTempo.bpm()));
+    ofSetWindowTitle("bpm : "+ofToString(floor(tapTempo.bpm())));
     ofxOscMessage m;
     m.setAddress("/beatStream");
     m.addFloatArg(tapTempo.beatPerc());
