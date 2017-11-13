@@ -6,12 +6,15 @@
 </osc>
 <colors>
     <color>
-        <params R=255 G=0 B=0 ></params>
+        <params R=0 G=0 B=0 ></params>
+    </color>
+    <color>
+        <params R=255 G=200 B=0 ></params>
     </color>
     <color>
         <params R=0 G=0 B=0 ></params>
     </color>
-<!--    <color>-->
-<!--        <params R=0 G=0 B=255 ></params>-->
-<!--    </color>-->
+    <color>
+        <params R=0 G=0 B=255 ></params>
+    </color>
 </colors>

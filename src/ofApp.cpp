@@ -10,6 +10,7 @@ void ofApp::setup()
     flapServer.setName("flap");
     barServer.setName("bar");
     arcServer.setName("arc");
+    squareServer.setName("square");
     loadSettings();
 }
 
@@ -25,6 +26,7 @@ void ofApp::loadSettings()
             colors.push_back(ofColor(0,0,0));
             colors.push_back(ofColor(255));
             fbo.allocate(100,100);
+            oscSender.setup("localhost",  5000);
         }
     }
     else
@@ -95,6 +97,7 @@ void ofApp::draw()
         flap();
         bar();
         arc();
+        square();
     }
 }
 
@@ -203,12 +206,10 @@ void ofApp::bar()
 
 void ofApp::arc()
 {
-    int barWidth = fbo.getWidth()/10;
     fbo.begin();
     ofSetColor(colors[0]);
     ofFill();
     ofDrawRectangle(0, 0, fbo.getWidth()  , fbo.getHeight());
-    ofEnableSmoothing();
     ofPath curve;
     curve.arc(ofPoint( fbo.getWidth()/2  , fbo.getHeight()/2),  fbo.getHeight()/2*0.8 , fbo.getHeight()/2*0.8, -180*tapTempo.beatPerc(), 180*tapTempo.beatPerc());
     curve.setFillColor(colors[1]);
@@ -222,12 +223,41 @@ void ofApp::arc()
     insideCurve.setFillColor(colors[0]);
     insideCurve.setFilled(true);
     insideCurve.draw();
-    ofDisableSmoothing();
     arcServer.publishTexture(&fbo.getTexture());
     fbo.end();
     if( showResults )
     {
         fbo.draw(500, 0,100,100);
+    }
+}
+
+void ofApp::square()
+{
+    float progression = tapTempo.beatPerc();
+    int centerX = fbo.getWidth()/2;
+    int centerY = fbo.getHeight()/2;
+    int width = fbo.getWidth();
+    int height = fbo.getHeight();
+    fbo.begin();
+    ofClear(0,0);
+    ofSetColor(colors[0],0);
+    ofFill();
+    ofDrawRectangle(0, 0, fbo.getWidth(), fbo.getHeight());
+    for( int i = 0 ; i < 1 ; i++)
+    {
+        ofPath rect;
+        rect.rectangle(centerX-0.5*(i+1)*centerX*progression,centerY-0.5*(i+1)*centerY*progression, 0.5*(i+1)*width*progression,0.5*(i+1)*height*progression );
+        rect.setStrokeColor(colors[1]);
+        rect.setFilled(false);
+        rect.setStrokeWidth(20);
+        rect.setCircleResolution(100);
+        rect.draw();
+    }
+    squareServer.publishTexture(&fbo.getTexture());
+    fbo.end();
+    if( showResults )
+    {
+        fbo.draw(600, 0,100,100);
     }
 }
 //--------------------------------------------------------------
@@ -241,7 +271,7 @@ void ofApp::keyPressed(int key){
         showResults = ! showResults ;
         if(showResults)
         {
-            ofSetWindowShape(400, 100);
+            ofSetWindowShape(800, 100);
         }
         else
         {
